@@ -737,6 +737,17 @@ export const commanders: Commander[] = [
 		combat: 4,
 		leadership: 0,
 		awakable: true
+	},
+	{
+		id: 'threeeyedraven',
+		name: 'Three-eyed Raven',
+		preferredGift: 'Book',
+		aptitude: 5,
+		finance: 5,
+		command: 0,
+		combat: 4,
+		leadership: 0,
+		awakable: true
 	}
 ];
 
