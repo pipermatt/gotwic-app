@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { friendshipStore } from '$lib/stores/friendship.svelte';
+	import CollapsiblePanel from './CollapsiblePanel.svelte';
 	import type { GiftType } from '$lib/types';
 
 	interface Props {
@@ -20,102 +21,84 @@
 	};
 </script>
 
-<div class="panel">
-	<div class="panel-header flex items-center justify-between px-4 py-2.5">
-		<div class="flex items-center gap-2">
-			<svg class="h-4 w-4 text-(--color-gold)/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d={giftIcons[giftType] || giftIcons.Book} />
-			</svg>
-			<h3 class="font-display font-bold tracking-wide text-(--color-gold)">{giftType}</h3>
-		</div>
-		<button
-			class="text-(--color-ash) transition-colors hover:text-(--color-gold)"
-			title="Shows commanders who prefer this gift, sorted by upgrade value. Higher = better value."
-			aria-label="Gift priority info"
-		>
-			<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-				/>
-			</svg>
-		</button>
-	</div>
-	<div class="divide-y divide-(--color-gold)/10">
-		{#if commanders.length === 0}
-			<div class="px-4 py-3 text-center text-(--color-ash)">No commanders available</div>
-		{:else}
-			{#each commanders as commander, index}
-				<div class="table-row-hover group relative flex items-center justify-between px-4 py-2">
-					<div class="flex items-center gap-2">
-						<span class="flex h-5 w-5 items-center justify-center rounded-full bg-(--color-gold)/10 text-xs text-(--color-gold)/70">
-							{index + 1}
-						</span>
-						<span class="text-(--color-parchment)">{commander.name}</span>
-					</div>
-					<!-- Tooltip -->
-					<div class="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 opacity-0 transition-opacity group-hover:opacity-100">
-						<div class="rounded border border-(--color-gold)/30 bg-(--color-slate) px-3 py-2 text-xs shadow-lg">
-							<div class="mb-1.5 border-b border-(--color-gold)/20 pb-1.5 font-semibold text-(--color-gold)">{commander.name}</div>
-							<div class="grid grid-cols-2 gap-x-4 gap-y-0.5 text-(--color-parchment)">
-								<span class="text-(--color-ash)">Aptitude:</span><span class="text-right">{commander.aptitude}</span>
-								<span class="text-(--color-ash)">Finance:</span><span class="text-right">{commander.finance}</span>
-								<span class="text-(--color-ash)">Command:</span><span class="text-right">{commander.command}</span>
-								<span class="text-(--color-ash)">Combat:</span><span class="text-right">{commander.combat}</span>
-								<span class="text-(--color-ash)">Leadership:</span><span class="text-right">{commander.leadership}</span>
-							</div>
-							{#if commander.playerCommander.maxLevel > 0}
-								<div class="mt-1.5 border-t border-(--color-gold)/20 pt-1.5 text-(--color-ash)">
-									Level {commander.playerCommander.currentLevel}/{commander.playerCommander.maxLevel}
-									{#if commander.playerCommander.awakeningLevel > 0}
-										<span class="ml-2">Awaken: {commander.playerCommander.awakeningLevel}</span>
-									{/if}
-								</div>
-							{/if}
-						</div>
-						<div class="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-(--color-gold)/30"></div>
-					</div>
-					<div class="flex items-center gap-2">
-						<span class="rounded bg-(--color-gold)/15 px-2 py-0.5 text-xs font-bold tabular-nums text-(--color-gold)">
-							{commander.cost}
-						</span>
-						{#if commander.needsUnlock}
-							<span class="text-(--color-crimson)" title="Needs Unlock">
-								<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-									<path
-										fill-rule="evenodd"
-										d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-										clip-rule="evenodd"
-									/>
-								</svg>
-							</span>
-						{/if}
-						{#if commander.needsAwakeningUpgrade}
-							<span class="text-(--quality-epic)" title="Needs Awakening Upgrade">
-								<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-									<path
-										fill-rule="evenodd"
-										d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
-										clip-rule="evenodd"
-									/>
-								</svg>
-							</span>
-						{:else if commander.needsUpgrade}
-							<span class="text-(--quality-uncommon)" title="Needs Quality Upgrade">
-								<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-									<path
-										fill-rule="evenodd"
-										d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
-										clip-rule="evenodd"
-									/>
-								</svg>
-							</span>
-						{/if}
-					</div>
+<CollapsiblePanel storageKey="gift-{giftType}">
+	{#snippet header()}
+		<svg class="h-4 w-4 text-(--color-gold)/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d={giftIcons[giftType] || giftIcons.Book} />
+		</svg>
+		<h3 class="font-display font-bold tracking-wide text-(--color-gold)">{giftType}</h3>
+	{/snippet}
+	{#if commanders.length === 0}
+		<div class="px-4 py-3 text-center text-(--color-ash)">No commanders available</div>
+	{:else}
+		{#each commanders as commander, index}
+			<div class="table-row-hover group relative flex items-center justify-between px-4 py-2">
+				<div class="flex items-center gap-2">
+					<span class="flex h-5 w-5 items-center justify-center rounded-full bg-(--color-gold)/10 text-xs text-(--color-gold)/70">
+						{index + 1}
+					</span>
+					<span class="text-(--color-parchment)">{commander.name}</span>
 				</div>
-			{/each}
-		{/if}
-	</div>
-</div>
+				<!-- Tooltip -->
+				<div class="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 opacity-0 transition-opacity group-hover:opacity-100">
+					<div class="rounded border border-(--color-gold)/30 bg-(--color-slate) px-3 py-2 text-xs shadow-lg">
+						<div class="mb-1.5 border-b border-(--color-gold)/20 pb-1.5 font-semibold text-(--color-gold)">{commander.name}</div>
+						<div class="grid grid-cols-2 gap-x-4 gap-y-0.5 text-(--color-parchment)">
+							<span class="text-(--color-ash)">Aptitude:</span><span class="text-right">{commander.aptitude}</span>
+							<span class="text-(--color-ash)">Finance:</span><span class="text-right">{commander.finance}</span>
+							<span class="text-(--color-ash)">Command:</span><span class="text-right">{commander.command}</span>
+							<span class="text-(--color-ash)">Combat:</span><span class="text-right">{commander.combat}</span>
+							<span class="text-(--color-ash)">Leadership:</span><span class="text-right">{commander.leadership}</span>
+						</div>
+						{#if commander.playerCommander.maxLevel > 0}
+							<div class="mt-1.5 border-t border-(--color-gold)/20 pt-1.5 text-(--color-ash)">
+								Level {commander.playerCommander.currentLevel}/{commander.playerCommander.maxLevel}
+								{#if commander.playerCommander.awakeningLevel > 0}
+									<span class="ml-2">Awaken: {commander.playerCommander.awakeningLevel}</span>
+								{/if}
+							</div>
+						{/if}
+					</div>
+					<div class="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-(--color-gold)/30"></div>
+				</div>
+				<div class="flex items-center gap-2">
+					<span class="rounded bg-(--color-gold)/15 px-2 py-0.5 text-xs font-bold tabular-nums text-(--color-gold)">
+						{commander.cost}
+					</span>
+					{#if commander.needsUnlock}
+						<span class="text-(--color-crimson)" title="Needs Unlock">
+							<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+								<path
+									fill-rule="evenodd"
+									d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+									clip-rule="evenodd"
+								/>
+							</svg>
+						</span>
+					{/if}
+					{#if commander.needsAwakeningUpgrade}
+						<span class="text-(--quality-epic)" title="Needs Awakening Upgrade">
+							<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+								<path
+									fill-rule="evenodd"
+									d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+									clip-rule="evenodd"
+								/>
+							</svg>
+						</span>
+					{:else if commander.needsUpgrade}
+						<span class="text-(--quality-uncommon)" title="Needs Quality Upgrade">
+							<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+								<path
+									fill-rule="evenodd"
+									d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+									clip-rule="evenodd"
+								/>
+							</svg>
+						</span>
+					{/if}
+				</div>
+			</div>
+		{/each}
+	{/if}
+</CollapsiblePanel>

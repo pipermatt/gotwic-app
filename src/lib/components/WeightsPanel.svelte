@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { friendshipStore } from '$lib/stores/friendship.svelte';
+	import CollapsiblePanel from './CollapsiblePanel.svelte';
 
 	const weightKeys = ['aptitude', 'finance', 'command', 'combat', 'leadership'] as const;
 
@@ -18,29 +19,27 @@
 	}
 </script>
 
-<div class="panel overflow-hidden">
-	<div class="panel-header px-4 py-2.5">
+<CollapsiblePanel storageKey="weights">
+	{#snippet header()}
 		<h3 class="font-display font-bold tracking-wide text-(--color-gold)">Weights</h3>
-	</div>
-	<div class="divide-y divide-(--color-gold)/10">
-		{#each weightKeys as key}
-			<div class="table-row-hover flex items-center justify-between px-4 py-2.5">
-				<div class="flex items-center gap-2">
-					<svg class="h-4 w-4 text-(--color-gold)/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d={weightIcons[key]} />
-					</svg>
-					<label class="capitalize text-(--color-parchment)" for="weight-{key}">{key}</label>
-				</div>
-				<input
-					id="weight-{key}"
-					type="number"
-					min="0"
-					max="10"
-					value={friendshipStore.weights[key]}
-					onchange={(e) => handleWeightChange(key, e)}
-					class="input-dark w-14 rounded px-2 py-1 text-center"
-				/>
+	{/snippet}
+	{#each weightKeys as key}
+		<div class="table-row-hover flex items-center justify-between px-4 py-2.5">
+			<div class="flex items-center gap-2">
+				<svg class="h-4 w-4 text-(--color-gold)/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d={weightIcons[key]} />
+				</svg>
+				<label class="capitalize text-(--color-parchment)" for="weight-{key}">{key}</label>
 			</div>
-		{/each}
-	</div>
-</div>
+			<input
+				id="weight-{key}"
+				type="number"
+				min="0"
+				max="10"
+				value={friendshipStore.weights[key]}
+				onchange={(e) => handleWeightChange(key, e)}
+				class="input-dark w-14 rounded px-2 py-1 text-center"
+			/>
+		</div>
+	{/each}
+</CollapsiblePanel>
